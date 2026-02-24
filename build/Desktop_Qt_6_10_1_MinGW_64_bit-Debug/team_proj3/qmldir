@@ -1,6 +1,0 @@
-module team_proj3
-typeinfo appteam_proj3.qmltypes
-prefer :/qt/qml/team_proj3/
-Main 254.0 Main.qml
-depends QtQuick
-
