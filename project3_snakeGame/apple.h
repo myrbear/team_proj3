@@ -9,6 +9,12 @@ class apple
 {
 public:
     apple();
+
+    QPoint getPosition() const;
+    void setPosition(const QPoint &pos);
+
+private:
+    QPoint position;
 };
 
 #endif // APPLE_H

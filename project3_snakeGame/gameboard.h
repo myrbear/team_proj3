@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QTimer>
 #include <snake.h>
+#include "apple.h"
 
 class GameBoard : public QWidget
 {
@@ -24,10 +25,17 @@ private slots:
 private:
     QTimer *gameTimer;
     Snake snake;
+    apple apple;
 
     const int cellSize = 20;
     const int gridWidth = 30;
     const int gridHeight = 20;
+
+    bool checkWallCollision();
+    bool checkSelfCollision();
+    bool checkAppleCollision();
+    void spawnApple();
+    void gameOver();
 };
 
 #endif // GAMEBOARD_H
