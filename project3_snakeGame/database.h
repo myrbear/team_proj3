@@ -9,6 +9,7 @@ class database
 {
 public:
     database();
+    void databaseLoop();
 };
 
 #endif // DATABASE_H
