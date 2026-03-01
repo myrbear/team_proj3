@@ -30,6 +30,7 @@ private:
     const int cellSize = 20;
     const int gridWidth = 30;
     const int gridHeight = 20;
+    int score = 0;
 
     bool checkWallCollision();
     bool checkSelfCollision();

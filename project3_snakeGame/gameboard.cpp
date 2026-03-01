@@ -46,7 +46,10 @@ void GameBoard::gameLoop()
     }
 
     if (grow)
+    {
+        score++;
         spawnApple();
+    }
 
     update();
 }
@@ -84,12 +87,18 @@ void GameBoard::paintEvent(QPaintEvent *event)
     painter.setBrush(Qt::red);
     painter.drawEllipse(apple.getPosition().x() * cellSize, apple.getPosition().y() * cellSize, cellSize, cellSize);
 
+    // draw score
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Arial", 14, QFont::Bold));
+    painter.drawText(rect().adjusted(0,0,0, -height() + 30), Qt::AlignHCenter, "Score: " + QString::number(score));
+
     // Game over pop-up
     if (!gameTimer->isActive())
     {
         painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 24, QFont::Bold));
-        painter.drawText(rect(), Qt::AlignCenter, "GAME OVER");
+        QString gameOverText = "GAME OVER\nFinal Score: " + QString::number(score);
+        painter.drawText(rect(), Qt::AlignCenter, gameOverText);
     }
 }
 
