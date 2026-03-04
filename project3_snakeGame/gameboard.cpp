@@ -11,7 +11,6 @@ GameBoard::GameBoard(QWidget *parent)
     spawnApple();
     gameTimer = new QTimer(this);
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::gameLoop);
-    gameTimer->start(150);
 }
 
 void GameBoard::gameLoop()
@@ -92,13 +91,26 @@ void GameBoard::paintEvent(QPaintEvent *event)
     painter.setFont(QFont("Arial", 14, QFont::Bold));
     painter.drawText(rect().adjusted(0,0,0, -height() + 30), Qt::AlignHCenter, "Score: " + QString::number(score));
 
-    // Game over pop-up
-    if (!gameTimer->isActive())
+    // Paused and game over pop-up
+    if (gameState == GameState::Paused)
+    {
+        painter.setPen(Qt::yellow);
+        painter.setFont(QFont("Arial", 24, QFont::Bold));
+        painter.drawText(rect(), Qt::AlignCenter, "PAUSED");
+    }else if (gameState == GameState::GameOver)
     {
         painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 24, QFont::Bold));
         QString gameOverText = "GAME OVER\nFinal Score: " + QString::number(score);
         painter.drawText(rect(), Qt::AlignCenter, gameOverText);
+    }
+
+    // pause text
+    if (isPaused)
+    {
+        painter.setPen(Qt::yellow);
+        painter.setFont(QFont("Arial", 24, QFont::Bold));
+        painter.drawText(rect(), Qt::AlignCenter, "PAUSED");
     }
 }
 
@@ -150,7 +162,39 @@ bool GameBoard::checkSelfCollision()
 void GameBoard::gameOver()
 {
     gameTimer->stop();
+    gameState = GameState::GameOver;
     update();
+}
+
+// reset all logic upon reset
+void GameBoard::resetGame()
+{
+    score = 0;
+    snake = Snake();
+    spawnApple();
+    gameState = GameState::Playing;
+    gameTimer->start(gameSpeed);
+    update();
+}
+
+void GameBoard::setDifficulty(Difficulty difficulty)
+{
+    currentDifficulty = difficulty;
+
+    switch (difficulty)
+    {
+    case Difficulty::Slug:
+        gameSpeed = 200;
+        break;
+    case Difficulty::Worm:
+        gameSpeed = 120;
+        break;
+    case Difficulty::Python:
+        gameSpeed = 70;
+        break;
+    }
+
+    resetGame();
 }
 
 void GameBoard::spawnApple()
@@ -182,4 +226,19 @@ bool GameBoard::checkAppleCollision()
     }
 
     return false;
+}
+
+void GameBoard::togglePause()
+{
+    if (gameState == GameState::Playing)
+    {
+        gameTimer->stop();
+        gameState = GameState::Paused;
+    }else if (gameState == GameState::Paused)
+    {
+        gameTimer->start(gameSpeed);
+        gameState = GameState::Playing;
+    }
+
+    update();
 }

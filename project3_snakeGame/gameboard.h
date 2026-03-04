@@ -8,12 +8,30 @@
 #include <snake.h>
 #include "apple.h"
 
+enum class Difficulty
+{
+    Slug,
+    Worm,
+    Python
+};
+
+enum class GameState
+{
+    WaitingForDifficulty,
+    Playing,
+    Paused,
+    GameOver
+};
+
 class GameBoard : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit GameBoard(QWidget *parent = nullptr);
+    void setDifficulty(Difficulty difficulty);
+    void resetGame();
+    void togglePause();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -30,11 +48,16 @@ private:
     const int cellSize = 20;
     const int gridWidth = 30;
     const int gridHeight = 20;
+    int gameSpeed = 120;
     int score = 0;
+
+    Difficulty currentDifficulty = Difficulty::Worm;
+    GameState gameState = GameState::WaitingForDifficulty;
 
     bool checkWallCollision();
     bool checkSelfCollision();
     bool checkAppleCollision();
+    bool isPaused = false;
     void spawnApple();
     void gameOver();
 };

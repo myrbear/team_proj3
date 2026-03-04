@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "menuscreen.h"
+#include "gameboard.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,6 +20,12 @@ public:
     ~MainWindow();
 
 private:
+    MenuScreen *menuScreen;
+    GameBoard *gameBoard;
+
+    void showMenu();
+    void showGame(int difficultyIndex);
+
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

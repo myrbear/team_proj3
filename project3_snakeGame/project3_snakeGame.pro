@@ -14,6 +14,7 @@ SOURCES += \
     gameboard.cpp \
     main.cpp \
     mainwindow.cpp \
+    menuscreen.cpp \
     snake.cpp
 
 HEADERS += \
@@ -21,6 +22,7 @@ HEADERS += \
     database.h \
     gameboard.h \
     mainwindow.h \
+    menuscreen.h \
     snake.h
 
 FORMS += \
