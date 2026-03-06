@@ -1,6 +1,7 @@
 #include "database.h"
-
+#include <QSqlDatabase.h>
 database::database() {}
+
 
 void database::databaseLoop() {
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL"); // a default connection
