@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +24,7 @@ HEADERS += \
     snake.h
 
 FORMS += \
+    database.ui \
     mainwindow.ui
 
 # Default rules for deployment.

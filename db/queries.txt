@@ -1,0 +1,4 @@
+create table users
+values(id integer, username varchar(20), email varchar(20), passhash varchar(64));
+
+select * from users;

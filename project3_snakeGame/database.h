@@ -2,14 +2,30 @@
 #define DATABASE_H
 
 #include <QMainWindow>
-#include <QObject>
-#include <QWidget>
+#include <QSqlDatabase.h>
+#include <QtSql>
+#include <QtDebug>
+#include <QFileInfo>
 
-class database
+namespace Ui {
+class database;
+}
+
+class database : public QMainWindow
 {
+    Q_OBJECT
+
 public:
-    database();
-    void databaseLoop();
+    explicit database(QWidget *parent = nullptr);
+    ~database();
+    void login();
+
+private slots:
+    void on_pushButton_login_clicked();
+
+private:
+    Ui::database *ui;
+    QSqlDatabase db;
 };
 
 #endif // DATABASE_H
