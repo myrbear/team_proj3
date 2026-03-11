@@ -34,6 +34,9 @@ MenuScreen::MenuScreen(QWidget *parent)
 
     loadLeaderboard();
 
+    setMinimumSize(600, 450);
+    adjustSize();
+
     connect(startButton,&QPushButton::clicked,[this]()
             {
                 QString name = nameInput->text().trimmed();
