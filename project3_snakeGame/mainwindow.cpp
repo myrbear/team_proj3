@@ -24,8 +24,9 @@ void MainWindow::showMenu()
             this, &MainWindow::showGame);
 }
 
-void MainWindow::showGame(int difficultyIndex)
+void MainWindow::showGame(QString playerName, int difficultyIndex)
 {
+    currentPlayer = playerName;
     gameBoard = new GameBoard(this);
 
     // Convert int to difficulty enum
@@ -39,6 +40,7 @@ void MainWindow::showGame(int difficultyIndex)
     }
 
     gameBoard->setDifficulty(difficulty);
+    gameBoard->setPlayerName(playerName);
 
     // Main container
     QWidget *container = new QWidget(this);
@@ -88,4 +90,16 @@ void MainWindow::showGame(int difficultyIndex)
     // keyboard focus
     gameBoard->setFocusPolicy(Qt::StrongFocus);
     gameBoard->setFocus();
+
+    // game over
+    connect(gameBoard, &GameBoard::gameEnded, this, &MainWindow::showGameOver);
 }
+
+void MainWindow::showGameOver(int score, bool newHighScore)
+{
+    GameOverScreen *gameOverScreen = new GameOverScreen(score, newHighScore, this);
+    setCentralWidget(gameOverScreen);
+    connect(gameOverScreen, &GameOverScreen::returnToMenu, this, &MainWindow::showMenu);
+    qDebug() << "Opening game over screen";
+}
+

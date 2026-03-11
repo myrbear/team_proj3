@@ -1,4 +1,5 @@
 #include "gameboard.h"
+#include "database.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QRandomGenerator>
@@ -97,6 +98,14 @@ void GameBoard::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::yellow);
         painter.setFont(QFont("Arial", 24, QFont::Bold));
         painter.drawText(rect(), Qt::AlignCenter, "PAUSED");
+
+        QVector<ScoreEntry> scores = Database::getTopScores();
+        int y = 200;
+        for (const ScoreEntry &s : scores)
+        {
+            painter.drawText(100, y, s.name + " - " + QString::number(s.score));
+            y += 30;
+        }
     }else if (gameState == GameState::GameOver)
     {
         painter.setPen(Qt::white);
@@ -161,14 +170,35 @@ bool GameBoard::checkSelfCollision()
 
 void GameBoard::gameOver()
 {
+    if (gameIsOver)
+    {
+        return;
+    }
+    qDebug() << "Game over reached";
+    gameIsOver = true;
     gameTimer->stop();
-    gameState = GameState::GameOver;
-    update();
+    Database::addScore(playerName, score, difficultyname);
+    bool newHighScore = false;
+    QVector<ScoreEntry> scores = Database::getTopScores();
+
+    if(!scores.isEmpty() && scores[0].score == score)
+    {
+        newHighScore = true;
+    }
+    qDebug()<<"newHighScore if statement updated";
+    int finalScore = score;
+    bool finalHighScore = newHighScore;
+    QMetaObject::invokeMethod(this, [this, finalScore, finalHighScore]() {
+        emit gameEnded(finalScore, finalHighScore);
+    }, Qt::QueuedConnection);
+    //emit gameEnded(score, newHighScore);
+    qDebug() << "Game over scheduled";
 }
 
 // reset all logic upon reset
 void GameBoard::resetGame()
 {
+    gameIsOver = false;
     score = 0;
     snake = Snake();
     spawnApple();
@@ -179,22 +209,28 @@ void GameBoard::resetGame()
 
 void GameBoard::setDifficulty(Difficulty difficulty)
 {
-    currentDifficulty = difficulty;
-
     switch (difficulty)
     {
     case Difficulty::Slug:
         gameSpeed = 200;
+        difficultyname = "Slug";
         break;
     case Difficulty::Worm:
         gameSpeed = 120;
+        difficultyname = "Worm";
         break;
     case Difficulty::Python:
         gameSpeed = 70;
+        difficultyname = "Python";
         break;
     }
 
     resetGame();
+}
+
+void GameBoard::setPlayerName(QString name)
+{
+    playerName = name;
 }
 
 void GameBoard::spawnApple()

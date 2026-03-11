@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "menuscreen.h"
 #include "gameboard.h"
+#include "gameoverscreen.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,9 +23,12 @@ public:
 private:
     MenuScreen *menuScreen;
     GameBoard *gameBoard;
+    QString currentPlayer;
+    GameOverScreen *gameOverScreen;
 
     void showMenu();
-    void showGame(int difficultyIndex);
+    void showGame(QString playerName, int difficultyIndex);
+    void showGameOver(int score, bool newHighScore);
 
     Ui::MainWindow *ui;
 };

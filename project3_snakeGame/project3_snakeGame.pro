@@ -1,7 +1,7 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+QT += widgets sql
 CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -12,6 +12,7 @@ SOURCES += \
     apple.cpp \
     database.cpp \
     gameboard.cpp \
+    gameoverscreen.cpp \
     main.cpp \
     mainwindow.cpp \
     menuscreen.cpp \
@@ -21,6 +22,7 @@ HEADERS += \
     apple.h \
     database.h \
     gameboard.h \
+    gameoverscreen.h \
     mainwindow.h \
     menuscreen.h \
     snake.h

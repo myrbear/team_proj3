@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QVBoxLayout>
+#include <QLineEdit>
+#include <QTableWidget>
 
 class MenuScreen : public QWidget
 {
@@ -13,11 +15,15 @@ public:
     explicit MenuScreen(QWidget *parent = nullptr);
 
 signals:
-    void startGame(int difficultyIndex);
+    void startGame(QString playerName, int difficultyIndex);
 
 private:
+    QLineEdit *nameInput;
     QComboBox *difficultyBox;
     QPushButton *startButton;
+    QTableWidget *leaderboard;
+
+    void loadLeaderboard();
 };
 
 #endif // MENUSCREEN_H
