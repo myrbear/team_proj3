@@ -10,7 +10,7 @@ database::database(QWidget *parent)
 
     db = QSqlDatabase::addDatabase("QSQLITE"); // a default connection
 
-    db.setDatabaseName("C:/users/myrbear/Documents/proj/team_proj3/db/game.db");
+    db.setDatabaseName("C:/users/mzlaf/Documents/proj/team_proj3/db/game.db");
 
 
 
@@ -43,7 +43,7 @@ void database::on_pushButton_login_clicked()
 
         QSqlQuery qry;
 
-        if (qry.exec("select * from user where username='"+username+"' and passhash='"+password+"'")){
+        if (qry.exec("select * from users where username='"+username+"' and passhash='"+password+"'")){
 
             int count = 0;
 
