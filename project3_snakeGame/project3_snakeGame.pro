@@ -1,5 +1,5 @@
 QT       += core gui
-
+QT       += network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += widgets sql
 CONFIG += c++17
@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     apple.cpp \
+    client.cpp \
     database.cpp \
     gameboard.cpp \
     gameoverscreen.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     apple.h \
+    client.h \
     database.h \
     gameboard.h \
     gameoverscreen.h \

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTcpSocket>
 #include "menuscreen.h"
 #include "gameboard.h"
 #include "gameoverscreen.h"
@@ -19,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QTcpSocket *socket;
 
 private:
     MenuScreen *menuScreen;
