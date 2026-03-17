@@ -1,68 +1,79 @@
 #include "database.h"
-#include "ui_database.h"
-#include "mainWindow.h"
 
-database::database(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::database)
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+
+void Database::initialize()
 {
-    ui->setupUi(this);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("snake_scores.db");
 
-    db = QSqlDatabase::addDatabase("QSQLITE"); // a default connection
-
-    db.setDatabaseName("C:/users/mzlaf/Documents/proj/team_proj3/db/game.db");
-
-
-
-    //db.setUserName("mzlaf");
-    //db.setPassword("asdf");
-}
-
-void database::login() {
-
-}
-
-database::~database()
-{
-    delete ui;
-}
-
-void database::on_pushButton_login_clicked()
-{
-    QString username;
-    QString password;
-
-    username = ui->lineEdit_user->text();
-    password = ui->lineEdit_pass->text();
-
-    if (!db.open()) {
-        ui->label_status->setText("Failed to open db");
+    if (!db.open())
+    {
+        qDebug() << "Database failed to open";
+        return;
     }
-    else{
-        ui->label_status->setText("Connected to db");
 
-        QSqlQuery qry;
+    QSqlQuery query;
 
-        if (qry.exec("select * from users where username='"+username+"' and passhash='"+password+"'")){
+    query.exec(
+        "CREATE TABLE IF NOT EXISTS scores ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "name TEXT,"
+        "score INTEGER,"
+        "difficulty TEXT)"
+        );
+}
 
-            int count = 0;
+void Database::addScore(const QString &name, int score, const QString &difficulty)
+{
+    QSqlQuery query;
 
-            while (qry.next()) {
-                count++;
-            }
-            if (count == 1) {
-                ui->label_status->setText("login successful");
-                MainWindow *w = new MainWindow();
-                w->show();
-                hide();
-            }
-            if (count > 1) {
-                ui->label_status->setText("duplicate user found");
-            }
-            if (count < 1) {
-                ui->label_status->setText("no user found");
-            }
-        }
+    query.prepare("INSERT INTO scores (name, score, difficulty) VALUES (:name, :score, :difficulty)");
+    query.bindValue(":name", name);
+    query.bindValue(":score", score);
+    query.bindValue(":difficulty", difficulty);
+
+    if(!query.exec())
+    {
+        qDebug()<<"Database insert failed"<<query.lastError();
     }
+
+    qDebug()<<"addScore inserted";
+
+    // keep only top 5 scores
+    query.exec(
+        "DELETE FROM scores WHERE id NOT IN "
+        "(SELECT id FROM scores ORDER BY score DESC LIMIT 5)");
+
+    qDebug()<<"Delete query complete.";
+}
+
+QVector<ScoreEntry> Database::getTopScores()
+{
+    QVector<ScoreEntry> scores;
+
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT name, score, difficulty FROM scores "
+        "ORDER BY score DESC LIMIT 5"
+        );
+
+    qDebug()<<"select query complete";
+
+    while (query.next())
+    {
+        ScoreEntry entry;
+        entry.name = query.value(0).toString();
+        entry.score = query.value(1).toInt();
+        entry.difficulty = query.value(2).toString();
+
+        scores.append(entry);
+    }
+
+    return scores;
 }
 

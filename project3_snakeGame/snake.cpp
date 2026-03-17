@@ -10,7 +10,7 @@ Snake::Snake()
     currentDirection = Direction::Right;
 }
 
-void Snake::move()
+void Snake::move(bool grow)
 {
     QPoint head = body.first();
 
@@ -31,15 +31,43 @@ void Snake::move()
     }
 
     body.prepend(head);     // add new head
-    body.removeLast();      // remove tail (no growth yet)
+    if (!grow) {
+        body.removeLast();
+    }
+}
+
+Direction Snake::getDirection() const
+{
+    return currentDirection;
 }
 
 void Snake::setDirection(Direction dir)
 {
+    // prevent 180 degree turns
+    if ((currentDirection == Direction::Up && dir == Direction::Down) ||
+        (currentDirection == Direction::Down && dir == Direction::Up) ||
+        (currentDirection == Direction::Left && dir == Direction::Right) ||
+        (currentDirection == Direction::Right && dir == Direction::Left))
+    {
+        return;
+    }
+
     currentDirection = dir;
 }
+
 
 QList<QPoint> Snake::getBody() const
 {
     return body;
+}
+
+QPoint Snake::getHead() const
+{
+    return body.first();
+}
+
+void Snake::grow()
+{
+    // duplicate last segment
+    body.append(body.last());
 }

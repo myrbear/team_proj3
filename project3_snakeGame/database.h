@@ -2,30 +2,24 @@
 #define DATABASE_H
 
 #include <QMainWindow>
-#include <QSqlDatabase.h>
-#include <QtSql>
-#include <QtDebug>
-#include <QFileInfo>
+#include <QObject>
+#include <QWidget>
+#include <QString>
+#include <QVector>
 
-namespace Ui {
-class database;
-}
-
-class database : public QMainWindow
+struct ScoreEntry
 {
-    Q_OBJECT
+    QString name;
+    int score;
+    QString difficulty;
+};
 
+class Database
+{
 public:
-    explicit database(QWidget *parent = nullptr);
-    ~database();
-    void login();
-
-private slots:
-    void on_pushButton_login_clicked();
-
-private:
-    Ui::database *ui;
-    QSqlDatabase db;
+    static void initialize();
+    static void addScore(const QString &name, int score, const QString &difficulty);
+    static QVector<ScoreEntry> getTopScores();
 };
 
 #endif // DATABASE_H

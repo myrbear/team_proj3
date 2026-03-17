@@ -20,10 +20,12 @@ class Snake
 public:
     Snake();
 
-    void move();
+    void move(bool grow = false);
     void setDirection(Direction dir);
-
+    Direction getDirection() const;
+    QPoint getHead() const;
     QList<QPoint> getBody() const;
+    void grow();
 
 private:
     QList<QPoint> body;
