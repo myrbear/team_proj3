@@ -18,6 +18,7 @@ enum class Direction
 class Snake
 {
 public:
+    Snake(int p);
     Snake();
 
     void move(bool grow = false);

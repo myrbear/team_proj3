@@ -1,0 +1,33 @@
+ // Predict next head position
+    QPoint nextHead = snake.getHead();
+
+    switch (s.getDirection())
+    {
+    case Direction::Up:
+        nextHead.ry() -= 1;
+        break;
+    case Direction::Down:
+        nextHead.ry() += 1;
+        break;
+    case Direction::Left:
+        nextHead.rx() -= 1;
+        break;
+    case Direction::Right:
+        nextHead.rx() += 1;
+        break;
+    }
+
+    bool grow = (nextHead == apple.getPosition());
+    s.move(grow);
+
+    if (checkWallCollision(s) || checkSelfCollision(s))
+    {
+        gameOver();
+        return;
+    }
+
+    if (grow)
+    {
+        score++;
+        spawnApple();
+    }

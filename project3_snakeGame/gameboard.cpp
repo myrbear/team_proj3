@@ -7,6 +7,8 @@
 GameBoard::GameBoard(QWidget *parent)
     : QWidget(parent)
 {
+    snake = Snake(0);
+    snake1 = Snake(1);
     setFixedSize(gridWidth * cellSize, gridHeight * cellSize);
     setFocusPolicy(Qt::StrongFocus);
     spawnApple();
@@ -14,43 +16,12 @@ GameBoard::GameBoard(QWidget *parent)
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::gameLoop);
 }
 
+void GameBoard::snakeLoop(){
+
+}
 void GameBoard::gameLoop()
 {
-    // Predict next head position
-    QPoint nextHead = snake.getHead();
-
-    switch (snake.getDirection())
-    {
-    case Direction::Up:
-        nextHead.ry() -= 1;
-        break;
-    case Direction::Down:
-        nextHead.ry() += 1;
-        break;
-    case Direction::Left:
-        nextHead.rx() -= 1;
-        break;
-    case Direction::Right:
-        nextHead.rx() += 1;
-        break;
-    }
-
-    bool grow = (nextHead == apple.getPosition());
-
-    snake.move(grow);
-
-    if (checkWallCollision() || checkSelfCollision())
-    {
-        gameOver();
-        return;
-    }
-
-    if (grow)
-    {
-        score++;
-        spawnApple();
-    }
-
+    \
     update();
 }
 
@@ -71,11 +42,18 @@ void GameBoard::paintEvent(QPaintEvent *event)
     for (int y = 0; y < gridHeight; ++y)
         painter.drawLine(0, y * cellSize, width(), y * cellSize);
 
-    // Draw snake
+    // Draw snakes
     painter.setBrush(QColor(0, 200, 0));
     painter.setPen(Qt::NoPen);
 
     for (const QPoint &segment : snake.getBody())
+    {
+        painter.drawRect(segment.x() * cellSize,
+                         segment.y() * cellSize,
+                         cellSize,
+                         cellSize);
+    }
+    for (const QPoint &segment : snake1.getBody())
     {
         painter.drawRect(segment.x() * cellSize,
                          segment.y() * cellSize,
@@ -140,11 +118,27 @@ void GameBoard::keyPressEvent(QKeyEvent *event)
         snake.setDirection(Direction::Right);
         break;
     }
+
+    switch (event->key())
+    {
+    case Qt::Key_W:
+        snake1.setDirection(Direction::Up);
+        break;
+    case Qt::Key_S:
+        snake1.setDirection(Direction::Down);
+        break;
+    case Qt::Key_A:
+        snake1.setDirection(Direction::Left);
+        break;
+    case Qt::Key_D:
+        snake1.setDirection(Direction::Right);
+        break;
+    }
 }
 
-bool GameBoard::checkWallCollision()
+bool GameBoard::checkWallCollision(Snake s)
 {
-    QPoint head = snake.getHead();
+    QPoint head = s.getHead();
 
     if (head.x() < 0 || head.x() >= gridWidth || head.y() < 0 || head.y() >= gridHeight)
     {
@@ -154,10 +148,10 @@ bool GameBoard::checkWallCollision()
     return false;
 }
 
-bool GameBoard::checkSelfCollision()
+bool GameBoard::checkSelfCollision(Snake s)
 {
-    QList<QPoint> body = snake.getBody();
-    QPoint head = snake.getHead();
+    QList<QPoint> body = s.getBody();
+    QPoint head = s.getHead();
 
     for (int i = 1; i < body.size(); ++i)
     {
@@ -200,7 +194,8 @@ void GameBoard::resetGame()
 {
     gameIsOver = false;
     score = 0;
-    snake = Snake();
+    snake = Snake(0);
+    snake1 = Snake(1);
     spawnApple();
     gameState = GameState::Playing;
     gameTimer->start(gameSpeed);
@@ -235,28 +230,38 @@ void GameBoard::setPlayerName(QString name)
 
 void GameBoard::spawnApple()
 {
-    while (true)
+    // there is one apple that moves, an illusion of many apples
+    int maxAttempts = 100;
+    int attempt = 0;
+
+    while (attempt < maxAttempts)
     {
         int x = QRandomGenerator::global()->bounded(gridWidth);
         int y = QRandomGenerator::global()->bounded(gridHeight);
 
         QPoint newPos(x, y);
 
-        // Make sure apple doesn't spawn on snake
+        // Make sure apple doesn't spawn on either snake
         const QList<QPoint>& body = snake.getBody();
-        if (!body.contains(newPos))
+        const QList<QPoint>& body1 = snake1.getBody();
+
+        if (!body.contains(newPos) && !body1.contains(newPos))
         {
             apple.setPosition(newPos);
             return;
         }
+
+        attempt++;
     }
+
+    return;
 }
 
-bool GameBoard::checkAppleCollision()
+bool GameBoard::checkAppleCollision(Snake s)
 {
-    if (snake.getHead() == apple.getPosition())
+    if (s.getHead() == apple.getPosition())
     {
-        snake.grow();
+        s.grow();
         spawnApple();
         return true;
     }

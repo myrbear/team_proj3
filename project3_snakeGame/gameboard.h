@@ -17,6 +17,7 @@ enum class Difficulty
 
 enum class GameState
 {
+    WaitingForPlayers,
     WaitingForDifficulty,
     Playing,
     Paused,
@@ -41,6 +42,7 @@ protected:
 
 private slots:
     void gameLoop();
+    void snakeLoop(Snake s);
 
 signals:
     void gameEnded(int score, bool newHighScore);
@@ -48,6 +50,7 @@ signals:
 private:
     QTimer *gameTimer;
     Snake snake;
+    Snake snake1;
     apple apple;
 
     const int cellSize = 20;
@@ -55,14 +58,15 @@ private:
     const int gridHeight = 20;
     int gameSpeed = 120;
     int score = 0;
+    int playerIdx = 0;
     QString playerName;
 
     Difficulty currentDifficulty = Difficulty::Worm;
     GameState gameState = GameState::WaitingForDifficulty;
 
-    bool checkWallCollision();
-    bool checkSelfCollision();
-    bool checkAppleCollision();
+    bool checkWallCollision(Snake s);
+    bool checkSelfCollision(Snake s);
+    bool checkAppleCollision(Snake s);
     bool isPaused = false;
     bool gameIsOver = false;
     void spawnApple();
