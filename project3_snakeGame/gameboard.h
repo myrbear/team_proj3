@@ -35,6 +35,7 @@ public:
     void togglePause();
     void setPlayerName(QString name);
     QString difficultyname;
+    void setPlayers(int p);
 
 protected:
     void setSnakes(Snake *s0, Snake *s1);
@@ -61,10 +62,12 @@ private:
     int score = 0;
     int playerIdx = 0;
     QString playerName;
+    int players = 1;
 
     Difficulty currentDifficulty = Difficulty::Worm;
     GameState gameState = GameState::WaitingForDifficulty;
 
+    bool checkOpponentCollision(Snake s0, Snake s1);
     bool checkWallCollision(Snake s);
     bool checkSelfCollision(Snake s);
     bool checkAppleCollision(Snake s);

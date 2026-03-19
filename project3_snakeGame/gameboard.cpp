@@ -67,10 +67,22 @@ void GameBoard::snakeLoop(Snake *s){
         spawnApple();
     }
 }
+void GameBoard::setPlayers(int p){
+    players = p;
+}
 void GameBoard::gameLoop()
 {
     snakeLoop(&snake);
-    snakeLoop(&snake1);
+
+    if (players == 2){
+        snakeLoop(&snake1);
+
+        if (checkOpponentCollision(snake, snake1)){
+            gameOver(); // has a gate called gameOver
+            return;
+        }
+    }
+
     update();
 }
 
@@ -102,12 +114,15 @@ void GameBoard::paintEvent(QPaintEvent *event)
                          cellSize,
                          cellSize);
     }
-    for (const QPoint &segment : snake1.getBody())
-    {
-        painter.drawRect(segment.x() * cellSize,
-                         segment.y() * cellSize,
-                         cellSize,
-                         cellSize);
+
+    if (players == 2){
+        for (const QPoint &segment : snake1.getBody())
+        {
+            painter.drawRect(segment.x() * cellSize,
+                             segment.y() * cellSize,
+                             cellSize,
+                             cellSize);
+        }
     }
 
     // draw apple
@@ -168,20 +183,22 @@ void GameBoard::keyPressEvent(QKeyEvent *event)
         break;
     }
 
-    switch (event->key())
-    {
-    case Qt::Key_W:
-        snake1.setDirection(Direction::Up);
-        break;
-    case Qt::Key_S:
-        snake1.setDirection(Direction::Down);
-        break;
-    case Qt::Key_A:
-        snake1.setDirection(Direction::Left);
-        break;
-    case Qt::Key_D:
-        snake1.setDirection(Direction::Right);
-        break;
+    if (players == 2){
+        switch (event->key())
+        {
+        case Qt::Key_W:
+            snake1.setDirection(Direction::Up);
+            break;
+        case Qt::Key_S:
+            snake1.setDirection(Direction::Down);
+            break;
+        case Qt::Key_A:
+            snake1.setDirection(Direction::Left);
+            break;
+        case Qt::Key_D:
+            snake1.setDirection(Direction::Right);
+            break;
+        }
     }
 }
 
@@ -192,6 +209,27 @@ bool GameBoard::checkWallCollision(Snake s)
     if (head.x() < 0 || head.x() >= gridWidth || head.y() < 0 || head.y() >= gridHeight)
     {
         return true;
+    }
+
+    return false;
+}
+
+bool GameBoard::checkOpponentCollision(Snake s0, Snake s1){
+    QList<QPoint> body0 = s0.getBody();
+    QList<QPoint> body1 = s1.getBody();
+
+    QPoint head0 = s0.getHead();
+    QPoint head1 = s1.getHead();
+
+    for (int i = 1; i < body1.size(); ++i)
+    {
+        if (head0 == body1[i])
+            return true;
+    }
+    for (int i = 1; i < body0.size(); ++i){
+        if (head1 == body0[i]){
+            return true;
+        }
     }
 
     return false;
@@ -295,10 +333,12 @@ void GameBoard::spawnApple()
         const QList<QPoint>& body = snake.getBody();
         const QList<QPoint>& body1 = snake1.getBody();
 
-        if (!body.contains(newPos) && !body1.contains(newPos))
+        if (!body.contains(newPos))
         {
-            apple.setPosition(newPos);
-            return;
+            if (players == 1 || (players == 2 && !body1.contains(newPos))){
+                apple.setPosition(newPos);
+                return;
+            }
         }
 
         attempt++;

@@ -8,21 +8,31 @@ MainWindow::MainWindow(QWidget *parent)
     menuScreen(nullptr),
     gameBoard(nullptr)
 {
-    showMenu();
+    showModeSelect();
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::showMenu()
+void MainWindow::showMenu(int p)
 {
+    players = p;
     menuScreen = new MenuScreen(this);
     setCentralWidget(menuScreen);
 
     connect(menuScreen, &MenuScreen::startGame,
             this, &MainWindow::showGame);
 }
+void MainWindow::showModeSelect()
+{
+    modeScreen = new modeselectscreen(this);
+    setCentralWidget(modeScreen);
+
+    connect(modeScreen, &modeselectscreen::startMenu,
+            this, &MainWindow::showMenu);
+}
+
 
 void MainWindow::showGame(QString playerName, int difficultyIndex)
 {
@@ -41,6 +51,7 @@ void MainWindow::showGame(QString playerName, int difficultyIndex)
 
     gameBoard->setDifficulty(difficulty);
     gameBoard->setPlayerName(playerName);
+    gameBoard->setPlayers(players);// will still gen 2 snakes, but only process 1's life if needed
 
     // Main container
     QWidget *container = new QWidget(this);
@@ -84,7 +95,7 @@ void MainWindow::showGame(QString playerName, int difficultyIndex)
     // back to menu
     connect(menuButton, &QPushButton::clicked, [this]()
             {
-                showMenu();
+                showModeSelect();
             });
 
     // keyboard focus
@@ -99,7 +110,7 @@ void MainWindow::showGameOver(int score, bool newHighScore)
 {
     GameOverScreen *gameOverScreen = new GameOverScreen(score, newHighScore, this);
     setCentralWidget(gameOverScreen);
-    connect(gameOverScreen, &GameOverScreen::returnToMenu, this, &MainWindow::showMenu);
+    connect(gameOverScreen, &GameOverScreen::returnToMenu, this, &MainWindow::showModeSelect);
     qDebug() << "Opening game over screen";
 }
 
