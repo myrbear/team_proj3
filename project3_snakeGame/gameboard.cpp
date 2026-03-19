@@ -7,8 +7,10 @@
 GameBoard::GameBoard(QWidget *parent)
     : QWidget(parent)
 {
-    snake = Snake(0);
-    snake1 = Snake(1);
+    snake = Snake();
+    snake1 = Snake();
+
+    setSnakes(&snake, &snake1);
     setFixedSize(gridWidth * cellSize, gridHeight * cellSize);
     setFocusPolicy(Qt::StrongFocus);
     spawnApple();
@@ -16,12 +18,59 @@ GameBoard::GameBoard(QWidget *parent)
     connect(gameTimer, &QTimer::timeout, this, &GameBoard::gameLoop);
 }
 
-void GameBoard::snakeLoop(){
+void GameBoard::setSnakes(Snake* s0, Snake* s1){
 
+    // Start in center of grid
+    (*s0).addBodySeg(QPoint(15, 10));
+    (*s0).addBodySeg(QPoint(14, 10));
+    (*s0).addBodySeg(QPoint(13, 10));
+    (*s0).setDirection(Direction::Right);
+
+    (*s1).addBodySeg(QPoint(20, 10));
+    (*s1).addBodySeg(QPoint(19, 10));
+    (*s1).addBodySeg(QPoint(18, 10));
+    (*s1).setDirection(Direction::Right);
+}
+
+void GameBoard::snakeLoop(Snake *s){
+    // Predict next head position
+    QPoint nextHead = (*s).getHead();
+
+    switch ((*s).getDirection())
+    {
+    case Direction::Up:
+        nextHead.ry() -= 1;
+        break;
+    case Direction::Down:
+        nextHead.ry() += 1;
+        break;
+    case Direction::Left:
+        nextHead.rx() -= 1;
+        break;
+    case Direction::Right:
+        nextHead.rx() += 1;
+        break;
+    }
+
+    bool grow = (nextHead == apple.getPosition());
+    (*s).move(grow);
+
+    if (checkWallCollision((*s)) || checkSelfCollision((*s)))
+    {
+        gameOver();
+        return;
+    }
+
+    if (grow)
+    {
+        score++;
+        spawnApple();
+    }
 }
 void GameBoard::gameLoop()
 {
-    \
+    snakeLoop(&snake);
+    snakeLoop(&snake1);
     update();
 }
 
@@ -79,7 +128,7 @@ void GameBoard::paintEvent(QPaintEvent *event)
 
         QVector<ScoreEntry> scores = Database::getTopScores();
         int y = 200;
-        for (const ScoreEntry &s : scores)
+        for (ScoreEntry &s : scores)
         {
             painter.drawText(100, y, s.name + " - " + QString::number(s.score));
             y += 30;
@@ -194,8 +243,9 @@ void GameBoard::resetGame()
 {
     gameIsOver = false;
     score = 0;
-    snake = Snake(0);
-    snake1 = Snake(1);
+    snake = Snake();
+    snake1 = Snake();
+    setSnakes(&snake, &snake1);
     spawnApple();
     gameState = GameState::Playing;
     gameTimer->start(gameSpeed);

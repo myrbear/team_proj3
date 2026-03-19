@@ -2,31 +2,10 @@
 
 
 Snake::Snake(){
-    body.append(QPoint(15, 10));
-    body.append(QPoint(14, 10));
-    body.append(QPoint(13, 10));
-    currentDirection = Direction::Right;
 }
 
-Snake::Snake(int p)
-{
-
-    if (p == 0){
-
-        // Start in center of grid
-        body.append(QPoint(15, 10));
-        body.append(QPoint(14, 10));
-        body.append(QPoint(13, 10));
-        currentDirection = Direction::Right;
-    }
-    else if (p == 1){
-
-        body.append(QPoint(20, 10));
-        body.append(QPoint(19, 10));
-        body.append(QPoint(18, 10));
-        currentDirection = Direction::Left;
-    }
-
+void Snake::addBodySeg(QPoint pos){
+    body.append(pos);
 }
 
 void Snake::move(bool grow)

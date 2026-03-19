@@ -26,6 +26,7 @@ public:
     Direction getDirection() const;
     QPoint getHead() const;
     QList<QPoint> getBody() const;
+    void addBodySeg(QPoint pos);
     void grow();
 
 private:

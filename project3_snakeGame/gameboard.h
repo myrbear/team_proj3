@@ -37,12 +37,13 @@ public:
     QString difficultyname;
 
 protected:
+    void setSnakes(Snake *s0, Snake *s1);
     void paintEvent(QPaintEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void gameLoop();
-    void snakeLoop(Snake s);
+    void snakeLoop(Snake *s);
 
 signals:
     void gameEnded(int score, bool newHighScore);
