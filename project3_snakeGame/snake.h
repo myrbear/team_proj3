@@ -28,8 +28,11 @@ public:
     QList<QPoint> getBody() const;
     void addBodySeg(QPoint pos);
     void grow();
+    void raiseTrigger();
+    void dropTrigger();
 
 private:
+    int moveTrigger = 0;
     QList<QPoint> body;
     Direction currentDirection;
 };

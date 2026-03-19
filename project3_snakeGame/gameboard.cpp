@@ -33,8 +33,20 @@ void GameBoard::setSnakes(Snake* s0, Snake* s1){
 }
 
 void GameBoard::snakeLoop(Snake *s){
+
+    (*s).dropTrigger();
+
     // Predict next head position
     QPoint nextHead = (*s).getHead();
+
+    bool grow = (nextHead == apple.getPosition());
+    (*s).move(grow);
+
+    if (checkWallCollision((*s)) || checkSelfCollision((*s)))
+    {
+        gameOver();
+        return;
+    }
 
     switch ((*s).getDirection())
     {
@@ -50,15 +62,6 @@ void GameBoard::snakeLoop(Snake *s){
     case Direction::Right:
         nextHead.rx() += 1;
         break;
-    }
-
-    bool grow = (nextHead == apple.getPosition());
-    (*s).move(grow);
-
-    if (checkWallCollision((*s)) || checkSelfCollision((*s)))
-    {
-        gameOver();
-        return;
     }
 
     if (grow)

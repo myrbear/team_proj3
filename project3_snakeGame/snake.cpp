@@ -39,8 +39,19 @@ Direction Snake::getDirection() const
     return currentDirection;
 }
 
+void Snake::dropTrigger(){
+    moveTrigger = 0;
+}
+void Snake::raiseTrigger(){
+    moveTrigger = 1;
+}
+
 void Snake::setDirection(Direction dir)
 {
+    if (moveTrigger == 1){
+        return;
+    }
+    raiseTrigger();
     // prevent 180 degree turns
     if ((currentDirection == Direction::Up && dir == Direction::Down) ||
         (currentDirection == Direction::Down && dir == Direction::Up) ||
