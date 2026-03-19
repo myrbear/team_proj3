@@ -1,15 +1,16 @@
 #include "snake.h"
 
-Snake::Snake()
-{
-    // Start in center of grid
-    body.append(QPoint(15, 10));
-    body.append(QPoint(14, 10));
-    body.append(QPoint(13, 10));
 
-    currentDirection = Direction::Right;
+Snake::Snake(){
 }
 
+<<<<<<< HEAD
+=======
+void Snake::addBodySeg(QPoint pos){
+    body.append(pos);
+}
+
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 void Snake::move(bool grow)
 {
     QPoint head = body.first();
@@ -39,10 +40,27 @@ void Snake::move(bool grow)
 Direction Snake::getDirection() const
 {
     return currentDirection;
+<<<<<<< HEAD
+=======
+}
+
+void Snake::dropTrigger(){
+    moveTrigger = 0;
+}
+void Snake::raiseTrigger(){
+    moveTrigger = 1;
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 }
 
 void Snake::setDirection(Direction dir)
 {
+<<<<<<< HEAD
+=======
+    if (moveTrigger == 1){
+        return;
+    }
+    raiseTrigger();
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
     // prevent 180 degree turns
     if ((currentDirection == Direction::Up && dir == Direction::Down) ||
         (currentDirection == Direction::Down && dir == Direction::Up) ||

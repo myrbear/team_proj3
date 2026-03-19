@@ -5,6 +5,10 @@
 #include "menuscreen.h"
 #include "gameboard.h"
 #include "gameoverscreen.h"
+<<<<<<< HEAD
+=======
+#include "modeselectscreen.h"
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,6 +26,7 @@ public:
 
 private:
     MenuScreen *menuScreen;
+<<<<<<< HEAD
     GameBoard *gameBoard;
     QString currentPlayer;
     GameOverScreen *gameOverScreen;
@@ -29,6 +34,18 @@ private:
     void showMenu();
     void showGame(QString playerName, int difficultyIndex);
     void showGameOver(int score, bool newHighScore);
+=======
+    modeselectscreen *modeScreen;
+    GameBoard *gameBoard;
+    QString currentPlayer;
+    GameOverScreen *gameOverScreen;
+    int players;
+
+    void showMenu(int players);
+    void showGame(QString playerName, int difficultyIndex);
+    void showGameOver(int score, bool newHighScore);
+    void showModeSelect();
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 
     Ui::MainWindow *ui;
 };

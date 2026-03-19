@@ -16,6 +16,10 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     menuscreen.cpp \
+<<<<<<< HEAD
+=======
+    modeselectscreen.cpp \
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
     snake.cpp
 
 HEADERS += \
@@ -25,6 +29,10 @@ HEADERS += \
     gameoverscreen.h \
     mainwindow.h \
     menuscreen.h \
+<<<<<<< HEAD
+=======
+    modeselectscreen.h \
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
     snake.h
 
 FORMS += \

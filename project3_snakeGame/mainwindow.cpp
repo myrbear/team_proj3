@@ -8,21 +8,43 @@ MainWindow::MainWindow(QWidget *parent)
     menuScreen(nullptr),
     gameBoard(nullptr)
 {
+<<<<<<< HEAD
     showMenu();
+=======
+    showModeSelect();
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 }
 
 MainWindow::~MainWindow()
 {
 }
 
+<<<<<<< HEAD
 void MainWindow::showMenu()
 {
+=======
+void MainWindow::showMenu(int p)
+{
+    players = p;
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
     menuScreen = new MenuScreen(this);
     setCentralWidget(menuScreen);
 
     connect(menuScreen, &MenuScreen::startGame,
             this, &MainWindow::showGame);
 }
+<<<<<<< HEAD
+=======
+void MainWindow::showModeSelect()
+{
+    modeScreen = new modeselectscreen(this);
+    setCentralWidget(modeScreen);
+
+    connect(modeScreen, &modeselectscreen::startMenu,
+            this, &MainWindow::showMenu);
+}
+
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 
 void MainWindow::showGame(QString playerName, int difficultyIndex)
 {
@@ -41,6 +63,10 @@ void MainWindow::showGame(QString playerName, int difficultyIndex)
 
     gameBoard->setDifficulty(difficulty);
     gameBoard->setPlayerName(playerName);
+<<<<<<< HEAD
+=======
+    gameBoard->setPlayers(players);// will still gen 2 snakes, but only process 1's life if needed
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
 
     // Main container
     QWidget *container = new QWidget(this);
@@ -84,7 +110,11 @@ void MainWindow::showGame(QString playerName, int difficultyIndex)
     // back to menu
     connect(menuButton, &QPushButton::clicked, [this]()
             {
+<<<<<<< HEAD
                 showMenu();
+=======
+                showModeSelect();
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
             });
 
     // keyboard focus
@@ -99,7 +129,11 @@ void MainWindow::showGameOver(int score, bool newHighScore)
 {
     GameOverScreen *gameOverScreen = new GameOverScreen(score, newHighScore, this);
     setCentralWidget(gameOverScreen);
+<<<<<<< HEAD
     connect(gameOverScreen, &GameOverScreen::returnToMenu, this, &MainWindow::showMenu);
+=======
+    connect(gameOverScreen, &GameOverScreen::returnToMenu, this, &MainWindow::showModeSelect);
+>>>>>>> feb77d24651ab29da91b717402c757459a2d12f8
     qDebug() << "Opening game over screen";
 }
 
